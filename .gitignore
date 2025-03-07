@@ -6,3 +6,4 @@ example.jpg
 th.png
 model.srf
 model_slic.srf
+.streamlit/secrets.toml

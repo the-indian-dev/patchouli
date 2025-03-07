@@ -6,6 +6,8 @@ from lib import image_to_surf_2d
 from OldLib import image_to_surf_2d as image_to_surf_2d_old
 from PIL import Image
 import base64
+import re
+import streamlit_analytics
 
 st.set_page_config(
     page_title="Project Patchouli",
@@ -13,16 +15,38 @@ st.set_page_config(
     layout="wide"
 )
 
-# Add Microsoft Clarity tracking
-st.markdown("""
-    <script type="text/javascript">
-        (function(c,l,a,r,i,t,y){
-            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-        })(window, document, "clarity", "script", "qjj17mslbi");
-    </script>
-""", unsafe_allow_html=True)
+code = """
+<!-- Clarity Analytics -->
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "qjj17mslbi");
+</script>
+<!-- SEO Meta Tags -->
+<meta name="description" content="Project Patchouli - Convert images to YSFlight SURF files. Licensed under GPLv3.">
+<meta name="keywords" content="YSFlight, SURF files, png2srf, repainting, decals, Project Patchouli, Ritabrata Das">
+<meta name="author" content="Ritabrata Das">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="Project Patchouli - Image to YSFlight SURF Converter">
+<meta property="og:description" content="Allows conversion of images into YSFlight surf format for the purpose of repaint and decals.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="app/static/patchouli.gif">
+"""
+
+# Read environment variable for analytics password
+analytics_password = st.secrets["A_PASSWORD"]
+
+streamlit_analytics.start_tracking()
+
+a=os.path.dirname(st.__file__)+'/static/index.html'
+with open(a, 'r') as f:
+    data=f.read()
+    if len(re.findall('UA-', data))==0:
+        with open(a, 'w') as ff:
+            newdata=re.sub('<head>','<head>'+code,data)
+            ff.write(newdata)
 
 # Custom CSS for styling
 st.markdown("""
@@ -247,3 +271,5 @@ with right_col:
                 os.unlink(result_img_path)
     else:
         st.info("Upload an image and click 'Process Image' to see results")
+
+streamlit_analytics.stop_tracking(unsafe_password=analytics_password)
