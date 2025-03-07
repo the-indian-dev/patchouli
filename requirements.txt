@@ -1,6 +1,6 @@
 numpy
 matplotlib
 scikit-image
-opencv-python
+opencv-python-headless
 streamlit
 streamlit-analytics
