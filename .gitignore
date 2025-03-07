@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+venv/
+example.jpg
+9m-logo.jpg
+th.png
+model.srf
+model_slic.srf
